@@ -1,0 +1,9 @@
+data/
+node_modules/
+.env
+*.log
+.DS_Store
+Thumbs.db
+
+# Folder lain di workspace ini, bukan bagian proyek Jernih
+pentest-baliprov/

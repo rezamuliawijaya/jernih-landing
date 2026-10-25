@@ -1,0 +1,1893 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jernih — Kerja tim jadi lebih jernih</title>
+  <meta name="description" content="Jernih menyatukan tugas, dokumen, dan insight dalam satu workspace yang ringan. Kurangi rapat, perbanyak progres.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="id_ID">
+  <meta property="og:site_name" content="Jernih">
+  <meta property="og:title" content="Jernih — Kerja tim jadi lebih jernih">
+  <meta property="og:description" content="Satu workspace untuk tugas, dokumen, dan insight. Kurangi rapat, perbanyak progres.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Jernih — Kerja tim jadi lebih jernih">
+  <meta name="twitter:description" content="Satu workspace untuk tugas, dokumen, dan insight. Kurangi rapat, perbanyak progres.">
+  <meta name="theme-color" content="#F6F6F3">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' rx='8' fill='%230E5C43'/%3E%3Cpath d='M8 10h12M8 14h8M8 18h4' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>document.documentElement.classList.add('js');</script>
+  <style>
+    /* ============================================================
+       Tokens
+       ============================================================ */
+    :root {
+      --paper: #F6F6F3;
+      --surface: #FFFFFF;
+      --ink: #0C0D0C;
+      --body: #2A2E2A;
+      --muted: #5B615C;
+      --soft: #686E67;
+      --line: #E3E4DE;
+      --line-strong: #D3D5CC;
+      --accent: #0E5C43;
+      --accent-deep: #083B2B;
+      --accent-soft: #E6F0EA;
+      --lime: #D8F27C;
+      --sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+      --max: 1160px;
+      --radius: 20px;
+      --shadow-sm: 0 1px 2px rgba(12, 13, 12, .05);
+      --shadow-md: 0 18px 40px -24px rgba(12, 13, 12, .28);
+      --ease: cubic-bezier(.22, .7, .25, 1);
+    }
+
+    /* ============================================================
+       Base
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scrollbar-gutter: stable; -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(1100px 560px at 50% -12%, rgba(14, 92, 67, .07), transparent 62%),
+        linear-gradient(180deg, #F9F9F6 0%, var(--paper) 34%);
+    }
+    h1, h2, h3, h4, p, figure, blockquote { margin: 0; }
+    ul, ol { margin: 0; padding: 0; }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; }
+    ::selection { background: var(--lime); color: #16200F; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+    .container { width: min(var(--max), calc(100% - 48px)); margin-inline: auto; }
+    .section { padding: clamp(72px, 9vw, 112px) 0; scroll-margin-top: 90px; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+
+    /* ============================================================
+       Buttons & labels
+       ============================================================ */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 48px; padding: 0 22px;
+      border: 1px solid transparent; border-radius: 12px;
+      font-size: 14.5px; font-weight: 600; letter-spacing: -.01em;
+      white-space: nowrap; cursor: pointer;
+      transition: transform .22s var(--ease), background .22s var(--ease),
+                  border-color .22s var(--ease), box-shadow .22s var(--ease), color .22s;
+    }
+    .btn svg { width: 17px; height: 17px; flex: none; }
+    .btn-primary { background: var(--ink); color: #fff; box-shadow: var(--shadow-sm); }
+    .btn-primary:hover { background: var(--accent); transform: translateY(-1px); box-shadow: 0 14px 28px -16px rgba(14, 92, 67, .7); }
+    .btn-secondary { background: rgba(255, 255, 255, .75); color: var(--ink); border-color: var(--line); }
+    .btn-secondary:hover { background: #fff; border-color: var(--line-strong); transform: translateY(-1px); }
+    .btn-light { background: #fff; color: var(--ink); }
+    .btn-light:hover { background: var(--lime); color: #16200F; transform: translateY(-1px); }
+    .btn-outline-light { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .22); }
+    .btn-outline-light:hover { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .4); }
+    .btn-sm { height: 40px; padding: 0 16px; font-size: 13px; border-radius: 10px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 9px;
+      font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--accent);
+    }
+    .eyebrow::before { content: ""; width: 18px; height: 1px; background: currentColor; opacity: .7; }
+
+    /* ============================================================
+       Navigation
+       ============================================================ */
+    .nav {
+      position: fixed; inset: 0 0 auto; z-index: 60;
+      border-bottom: 1px solid transparent;
+      transition: background .3s var(--ease), border-color .3s, box-shadow .3s;
+    }
+    .nav.is-scrolled {
+      background: rgba(246, 246, 243, .82);
+      -webkit-backdrop-filter: saturate(180%) blur(16px);
+      backdrop-filter: saturate(180%) blur(16px);
+      border-bottom-color: var(--line);
+    }
+    .nav-inner { height: 74px; display: flex; align-items: center; gap: 18px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; letter-spacing: -.03em; line-height: 1; }
+    .brand svg { width: 28px; height: 28px; }
+    .nav-links { display: flex; align-items: center; gap: 2px; margin-inline: auto; }
+    .nav-links a {
+      padding: 8px 13px; border-radius: 8px;
+      font-size: 13.5px; font-weight: 500; color: var(--muted);
+      transition: color .2s, background .2s;
+    }
+    .nav-links a:hover { color: var(--ink); background: rgba(12, 13, 12, .045); }
+    .nav-cta { display: flex; align-items: center; gap: 6px; }
+    .nav-login { padding: 8px 12px; font-size: 13.5px; font-weight: 600; color: var(--muted); border-radius: 8px; transition: color .2s; }
+    .nav-login:hover { color: var(--ink); }
+    .nav-toggle {
+      display: none; width: 42px; height: 42px; flex: none;
+      align-items: center; justify-content: center; flex-direction: column; gap: 4px;
+      border: 1px solid var(--line); border-radius: 11px;
+      background: rgba(255, 255, 255, .8); cursor: pointer;
+    }
+    .nav-toggle span { width: 16px; height: 1.5px; border-radius: 2px; background: var(--ink); transition: transform .25s var(--ease); }
+    .nav-toggle.is-open span:first-child { transform: translateY(2.75px) rotate(45deg); }
+    .nav-toggle.is-open span:last-child { transform: translateY(-2.75px) rotate(-45deg); }
+    .mobile-menu {
+      display: none; position: fixed; top: 82px; left: 16px; right: 16px; z-index: 55;
+      padding: 10px; border: 1px solid var(--line); border-radius: 20px;
+      background: rgba(255, 255, 255, .96);
+      -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+      box-shadow: 0 30px 60px -30px rgba(12, 13, 12, .35);
+      opacity: 0; visibility: hidden; transform: translateY(-8px);
+      transition: opacity .25s var(--ease), transform .25s var(--ease), visibility .25s;
+    }
+    .mobile-menu.is-open { opacity: 1; visibility: visible; transform: none; }
+    .mm-link { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 600; }
+    .mm-link:hover { background: var(--paper); }
+    .mm-actions { display: grid; gap: 8px; margin-top: 6px; padding: 10px 4px 4px; border-top: 1px solid var(--line); }
+    .mm-actions .btn { width: 100%; }
+
+    /* ============================================================
+       Hero
+       ============================================================ */
+    .hero { position: relative; padding: clamp(124px, 14vw, 166px) 0 0; overflow: hidden; }
+    .hero::before {
+      content: ""; position: absolute; inset: 0 0 auto; height: 760px; pointer-events: none;
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 64px 64px;
+      opacity: .42;
+      -webkit-mask-image: radial-gradient(ellipse 68% 62% at 50% 0%, #000 10%, transparent 76%);
+      mask-image: radial-gradient(ellipse 68% 62% at 50% 0%, #000 10%, transparent 76%);
+    }
+    .hero::after {
+      content: ""; position: absolute; top: -220px; left: 50%; width: min(920px, 110vw); height: 620px;
+      transform: translateX(-50%); pointer-events: none;
+      background: radial-gradient(closest-side, rgba(14, 92, 67, .11), transparent 72%);
+    }
+    .hero-inner { position: relative; z-index: 1; text-align: center; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 6px 14px 6px 7px;
+      border: 1px solid var(--line); border-radius: 999px;
+      background: rgba(255, 255, 255, .72);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, .9) inset;
+      font-size: 12.5px; font-weight: 500; color: var(--muted);
+      transition: border-color .2s, transform .2s var(--ease);
+    }
+    .hero-badge:hover { border-color: var(--line-strong); transform: translateY(-1px); }
+    .badge-new {
+      padding: 3px 8px; border-radius: 999px;
+      background: var(--accent); color: #fff;
+      font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    }
+    .hero-badge svg { width: 13px; height: 13px; color: var(--accent); }
+    .hero h1 {
+      max-width: 15.5ch; margin: 26px auto 0;
+      font-size: clamp(2.55rem, 6.2vw, 4.65rem);
+      font-weight: 700; line-height: 1.02; letter-spacing: -.048em;
+      text-wrap: balance;
+    }
+    .hero h1 em {
+      font-family: var(--serif); font-style: italic; font-weight: 400;
+      font-size: 1.04em; letter-spacing: -.02em; color: var(--accent);
+    }
+    .hero-sub {
+      max-width: 590px; margin: 24px auto 0;
+      font-size: clamp(1rem, 1.35vw, 1.1rem); line-height: 1.65; color: var(--muted);
+    }
+    .hero-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 34px; }
+    .hero-trust { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 22px; margin-top: 20px; font-size: 12px; font-weight: 500; color: var(--soft); }
+    .hero-trust span { display: inline-flex; align-items: center; gap: 6px; }
+    .hero-trust svg { width: 13px; height: 13px; color: var(--accent); }
+
+    /* ============================================================
+       Hero product mockup
+       ============================================================ */
+    .hero-visual {
+      position: relative; z-index: 1; max-width: 1000px;
+      margin: clamp(52px, 7vw, 78px) auto 0; isolation: isolate;
+    }
+    .hero-visual::before {
+      content: ""; position: absolute; inset: -60px -30px -40px; z-index: -1;
+      background: radial-gradient(ellipse at 50% 10%, rgba(14, 92, 67, .14), transparent 62%);
+      filter: blur(24px);
+    }
+    .app {
+      position: relative; overflow: hidden; text-align: left;
+      border: 1px solid var(--line); border-radius: 18px; background: #fff;
+      box-shadow:
+        0 50px 100px -50px rgba(12, 13, 12, .42),
+        0 2px 8px rgba(12, 13, 12, .04),
+        0 0 0 1px rgba(255, 255, 255, .6) inset;
+    }
+    .app-bar {
+      display: flex; align-items: center; gap: 6px; height: 38px; padding: 0 14px;
+      border-bottom: 1px solid var(--line); background: #FAFAF7;
+    }
+    .win-dot { width: 9px; height: 9px; flex: none; border-radius: 50%; background: #E3E4DE; }
+    .url-pill {
+      margin-left: 10px; padding: 3px 14px; border-radius: 99px;
+      background: #F1F2ED; color: #9AA098;
+      font-size: 9.5px; font-weight: 500; letter-spacing: .01em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .app-body { display: grid; grid-template-columns: 176px minmax(0, 1fr); min-height: 480px; }
+    .app-side {
+      display: flex; flex-direction: column; gap: 3px; padding: 16px 12px;
+      border-right: 1px solid var(--line); background: #FCFCFA;
+    }
+    .side-brand { display: flex; align-items: center; gap: 7px; padding: 0 6px 12px; font-size: 11.5px; font-weight: 700; letter-spacing: -.02em; }
+    .side-logo { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 6px; background: var(--accent); color: #fff; font-size: 9px; font-weight: 700; }
+    .side-label { padding: 14px 8px 6px; font-size: 8px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #A9AFA7; }
+    .side-item { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 7px; font-size: 10.5px; font-weight: 500; color: #6A706A; }
+    .side-item svg { width: 12px; height: 12px; color: #9AA098; }
+    .side-item.is-active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    .side-item.is-active svg { color: var(--accent); }
+    .dot-mini { width: 6px; height: 6px; flex: none; border-radius: 2px; }
+    .side-card { margin-top: auto; padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+    .side-card strong { display: block; font-size: 9px; font-weight: 600; color: #5B615C; }
+    .side-bar { height: 4px; margin-top: 7px; border-radius: 99px; overflow: hidden; background: #EEEFEA; }
+    .side-bar span { display: block; width: 72%; height: 100%; border-radius: 99px; background: var(--accent); }
+    .side-note { display: block; margin-top: 5px; font-size: 8px; color: #9AA098; }
+    .app-main { min-width: 0; padding: 18px 20px 20px; background: #fff; }
+    .app-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .app-title { display: block; font-size: 16px; font-weight: 700; letter-spacing: -.03em; line-height: 1.2; }
+    .app-sub { display: block; margin-top: 3px; font-size: 9.5px; color: #9AA098; }
+    .app-top-right { display: flex; align-items: center; gap: 8px; }
+    .search-pill { padding: 5px 10px; border: 1px solid var(--line); border-radius: 7px; background: #FBFBF9; font-size: 9px; color: #A0A69E; }
+    .avatar { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 8.5px; font-weight: 700; letter-spacing: .02em; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-top: 16px; }
+    .stat-card { padding: 10px 11px; border: 1px solid var(--line); border-radius: 10px; background: #FCFCFA; }
+    .stat-label { display: block; font-size: 8.5px; font-weight: 500; color: #8A9089; }
+    .stat-value { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+    .stat-value strong { font-size: 15px; font-weight: 700; letter-spacing: -.03em; }
+    .delta { padding: 1px 5px; border-radius: 4px; background: #E7F4EC; color: #177A53; font-size: 7.5px; font-weight: 700; }
+    .chart-card { margin-top: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; }
+    .chart-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .chart-head strong { display: block; font-size: 10px; font-weight: 600; }
+    .chart-head > div span { display: block; margin-top: 1px; font-size: 8px; color: #A0A69E; }
+    .chart-chip { padding: 2px 6px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-size: 7.5px; font-weight: 700; }
+    .chart { width: 100%; height: 104px; margin-top: 8px; overflow: visible; }
+    .chart-axis { display: flex; justify-content: space-between; margin-top: 4px; font-size: 7.5px; color: #B0B5AE; }
+    .rows { margin-top: 10px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+    .row { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-top: 1px solid var(--line); }
+    .row:first-child { border-top: 0; }
+    .row-av { display: grid; place-items: center; width: 19px; height: 19px; flex: none; border-radius: 6px; font-size: 7px; font-weight: 700; }
+    .row-main { flex: 1; min-width: 0; }
+    .row-main strong { display: block; font-size: 9px; font-weight: 600; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .row-main span { display: block; margin-top: 1px; font-size: 7.5px; color: #A0A69E; }
+    .status { padding: 2px 6px; border-radius: 4px; font-size: 7px; font-weight: 700; white-space: nowrap; }
+    .status.done { background: #E7F4EC; color: #177A53; }
+    .status.progress { background: #EAF0FD; color: #3563C7; }
+    .status.review { background: #FDF1E3; color: #A76A17; }
+
+    .float-card {
+      position: absolute; z-index: 2; padding: 11px 13px;
+      border: 1px solid rgba(227, 228, 222, .9); border-radius: 13px;
+      background: rgba(255, 255, 255, .9);
+      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+      box-shadow: 0 22px 44px -22px rgba(12, 13, 12, .3);
+    }
+    .float-a { top: 22%; right: -26px; animation: float 7s ease-in-out infinite; }
+    .float-b { bottom: 18%; left: -32px; animation: float 8.5s ease-in-out infinite reverse; }
+    .float-head { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 600; color: #4A504A; }
+    .pulse { width: 6px; height: 6px; border-radius: 50%; background: #2FB47A; box-shadow: 0 0 0 3px rgba(47, 180, 122, .16); }
+    .float-avatars { display: flex; margin-top: 9px; }
+    .float-avatars span { display: grid; place-items: center; width: 23px; height: 23px; margin-left: -6px; border: 2px solid #fff; border-radius: 50%; background: #E9EDE7; font-size: 7.5px; font-weight: 700; color: #4A504A; }
+    .float-avatars span:first-child { margin-left: 0; }
+    .float-avatars .more { background: var(--accent); color: #fff; }
+    .float-label { font-size: 9.5px; font-weight: 600; color: #8A9089; }
+    .float-b strong { display: block; margin-top: 1px; font-size: 23px; font-weight: 700; letter-spacing: -.05em; line-height: 1.1; color: var(--accent); }
+    .float-sub { font-size: 8.5px; color: #A6ABA4; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    /* ============================================================
+       Logo cloud
+       ============================================================ */
+    .logos { padding: clamp(36px, 5vw, 56px) 0 clamp(28px, 4vw, 40px); }
+    .logos-label { text-align: center; font-size: 10.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: #9AA098; }
+    .logo-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px 44px; margin-top: 22px; }
+    .logo-word { font-size: 18px; font-weight: 700; letter-spacing: -.03em; color: #3B403B; opacity: .42; transition: opacity .25s; user-select: none; }
+    .logo-word:hover { opacity: .8; }
+    .logo-word.serif { font-family: var(--serif); font-style: italic; font-size: 23px; font-weight: 400; letter-spacing: -.01em; }
+    .logo-word.mono { font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+
+    /* ============================================================
+       Section headings
+       ============================================================ */
+    .section-head { max-width: 620px; }
+    .section-head.center { margin-inline: auto; text-align: center; }
+    .section-head h2 {
+      max-width: 17ch; margin-top: 16px;
+      font-size: clamp(2rem, 4.1vw, 3.1rem); font-weight: 700;
+      line-height: 1.06; letter-spacing: -.042em; text-wrap: balance;
+    }
+    .section-head.center h2 { margin-inline: auto; }
+    .section-head p { max-width: 56ch; margin-top: 16px; font-size: 1.02rem; line-height: 1.65; color: var(--muted); }
+    .section-head.center p { margin-inline: auto; }
+
+    /* ============================================================
+       Features
+       ============================================================ */
+    .features-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-top: 52px; }
+    .feature {
+      display: flex; flex-direction: column; padding: 26px;
+      border: 1px solid var(--line); border-radius: 22px; background: var(--surface);
+      transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s;
+    }
+    .feature:hover { transform: translateY(-3px); border-color: var(--line-strong); box-shadow: var(--shadow-md); }
+    .feature-wide { grid-column: span 3; }
+    .feature-small { grid-column: span 2; }
+    .feature-icon { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 18px; border-radius: 11px; background: var(--accent-soft); color: var(--accent); }
+    .feature-icon svg { width: 19px; height: 19px; }
+    .feature h3 { font-size: 1.02rem; font-weight: 700; letter-spacing: -.025em; line-height: 1.35; }
+    .feature p { max-width: 44ch; margin-top: 7px; font-size: .9rem; line-height: 1.6; color: var(--muted); }
+    .feature-visual { margin-top: auto; padding-top: 24px; }
+
+    .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; border: 1px solid var(--line); border-radius: 14px; background: #FAFAF7; }
+    .board-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: 9px; border: 1px solid #ECEDE7; border-radius: 10px; background: #fff; }
+    .board-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 2px; font-size: 8.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #8A9089; }
+    .board-head span:last-child { color: #B3B8B1; font-weight: 600; }
+    .task { display: flex; align-items: center; gap: 5px; padding: 6px 7px; border: 1px solid #EEEFE9; border-radius: 6px; background: #FAFAF7; font-size: 9px; font-weight: 600; line-height: 1.35; color: #3B403B; }
+    .t-dot { width: 5px; height: 5px; flex: none; border-radius: 50%; }
+    .t-av { display: grid; place-items: center; width: 14px; height: 14px; margin-left: auto; flex: none; border-radius: 50%; background: #E9EDE7; font-size: 6.5px; font-weight: 700; color: #5B615C; }
+    .task.ghost { justify-content: center; border-style: dashed; background: transparent; color: #A6ABA4; font-weight: 500; }
+    .task.done { color: #7A807A; }
+    .task.done .t-title { text-decoration: line-through; text-decoration-color: #C3C8C0; }
+    .t-check { display: grid; place-items: center; width: 11px; height: 11px; flex: none; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+    .t-check svg { width: 7px; height: 7px; }
+
+    .flow { display: flex; flex-direction: column; padding: 10px; border: 1px solid var(--line); border-radius: 14px; background: #FAFAF7; }
+    .flow-step { display: flex; align-items: center; gap: 9px; padding: 8px 9px; border: 1px solid #ECEDE7; border-radius: 8px; background: #fff; }
+    .flow-ico { display: grid; place-items: center; width: 24px; height: 24px; flex: none; border-radius: 7px; background: var(--accent-soft); color: var(--accent); }
+    .flow-ico svg { width: 12px; height: 12px; }
+    .flow-step:nth-of-type(2) .flow-ico { background: #EAF0FD; color: #3563C7; }
+    .flow-step:nth-of-type(3) .flow-ico { background: #FDF1E3; color: #A76A17; }
+    .flow-body strong { display: block; font-size: 9.5px; font-weight: 600; line-height: 1.3; }
+    .flow-body span { display: block; margin-top: 1px; font-size: 8px; color: #9AA098; }
+    .flow-link { display: flex; align-items: center; gap: 6px; height: 17px; padding-left: 20px; color: #B8BDB6; }
+    .flow-link::before { content: ""; width: 1px; height: 100%; border-left: 1px dashed #CDD1CA; }
+    .flow-link svg { width: 8px; height: 8px; margin-left: -4px; }
+
+    .bars { display: flex; align-items: flex-end; gap: 5px; height: 92px; padding: 10px 10px 0; border: 1px solid var(--line); border-radius: 12px; background: #FAFAF7; }
+    .bar { flex: 1; height: var(--h); min-height: 6px; border-radius: 4px 4px 2px 2px; background: #DCE4DD; transition: background .25s; }
+    .bar.hi { background: var(--accent); }
+    .bar-meta { display: flex; justify-content: space-between; margin-top: 7px; padding: 0 2px; font-size: 8.5px; color: #9AA098; }
+    .bar-meta strong { color: var(--accent); font-weight: 700; }
+
+    .bubbles { display: flex; flex-direction: column; gap: 7px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: #FAFAF7; }
+    .bubble { display: flex; align-items: flex-start; gap: 6px; }
+    .bubble.right { flex-direction: row-reverse; }
+    .bubble-av { display: grid; place-items: center; width: 20px; height: 20px; flex: none; border-radius: 50%; font-size: 6.5px; font-weight: 700; }
+    .bubble-body { max-width: 88%; padding: 7px 9px; border: 1px solid #ECEDE7; border-radius: 9px; background: #fff; font-size: 9px; line-height: 1.45; color: #4A504A; }
+    .bubble-body strong { display: block; margin-bottom: 2px; font-size: 8px; color: var(--ink); }
+    .bubble.right .bubble-body { background: var(--accent-soft); border-color: #D9E7DE; }
+
+    .pills { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: #FAFAF7; }
+    .pill { display: inline-flex; align-items: center; gap: 5px; padding: 5px 9px; border: 1px solid #ECEDE7; border-radius: 99px; background: #fff; font-size: 8.5px; font-weight: 600; color: #4A504A; }
+    .pill i { width: 6px; height: 6px; flex: none; border-radius: 2px; }
+
+    .security { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px 24px; margin-top: 16px; padding: 18px 22px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255, 255, 255, .7); }
+    .security-left { display: flex; align-items: center; gap: 10px; font-size: .9rem; font-weight: 600; }
+    .security-left svg { width: 18px; height: 18px; flex: none; color: var(--accent); }
+    .badges { display: flex; flex-wrap: wrap; gap: 7px; }
+    .badge-chip { padding: 5px 9px; border: 1px solid var(--line); border-radius: 6px; background: #fff; font-size: 10px; font-weight: 600; color: var(--muted); }
+
+    /* ============================================================
+       How it works
+       ============================================================ */
+    .section-white { background: var(--surface); border-block: 1px solid var(--line); }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 52px; }
+    .step { position: relative; padding: 26px; border: 1px solid var(--line); border-radius: 18px; background: var(--paper); }
+    .step-num { font-family: var(--serif); font-style: italic; font-size: 2.1rem; line-height: 1; color: var(--accent); }
+    .step h3 { margin-top: 18px; font-size: 1.02rem; font-weight: 700; letter-spacing: -.02em; }
+    .step p { margin-top: 7px; font-size: .9rem; line-height: 1.6; color: var(--muted); }
+
+    /* ============================================================
+       Stats band
+       ============================================================ */
+    .stats-band { position: relative; overflow: hidden; padding: clamp(32px, 5vw, 54px); border-radius: 28px; background: #0C0D0C; color: #fff; }
+    .stats-band::before {
+      content: ""; position: absolute; top: -160px; right: -100px; width: 520px; height: 420px; pointer-events: none;
+      background: radial-gradient(closest-side, rgba(216, 242, 124, .16), transparent 70%);
+    }
+    .stats-band::after {
+      content: ""; position: absolute; bottom: -180px; left: -80px; width: 460px; height: 360px; pointer-events: none;
+      background: radial-gradient(closest-side, rgba(14, 92, 67, .55), transparent 70%);
+    }
+    .stats-grid { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .stat-block strong { display: block; font-size: clamp(1.9rem, 3.6vw, 2.65rem); font-weight: 700; letter-spacing: -.045em; line-height: 1; }
+    .stat-block strong em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--lime); font-size: .92em; }
+    .stat-block span { display: block; margin-top: 10px; font-size: .8rem; color: #98A098; }
+
+    /* ============================================================
+       Testimonials
+       ============================================================ */
+    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 52px; }
+    .testi { display: flex; flex-direction: column; gap: 18px; padding: 26px; border: 1px solid var(--line); border-radius: 20px; background: #fff; }
+    .stars { font-size: 12px; letter-spacing: 3px; color: var(--accent); }
+    .testi blockquote { font-size: .97rem; line-height: 1.62; letter-spacing: -.01em; color: var(--body); }
+    .testi-foot { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 18px; border-top: 1px solid var(--line); }
+    .testi-av { display: grid; place-items: center; width: 36px; height: 36px; flex: none; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-size: 11px; font-weight: 700; }
+    .testi-foot strong { display: block; font-size: 12.5px; }
+    .testi-foot div span { display: block; font-size: 11px; color: var(--soft); }
+
+    /* ============================================================
+       Pricing
+       ============================================================ */
+    .pricing-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 32px; }
+    .pricing-head .section-head { max-width: 560px; }
+    .billing { display: inline-flex; align-items: center; gap: 2px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+    .billing button {
+      display: flex; align-items: center; gap: 7px; padding: 8px 15px;
+      border: 0; border-radius: 9px; background: transparent;
+      font-size: 12.5px; font-weight: 600; color: var(--muted); cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .billing button.is-active { background: var(--ink); color: #fff; }
+    .save-tag { padding: 2px 5px; border-radius: 5px; background: var(--lime); color: #25331A; font-size: 9.5px; font-weight: 700; letter-spacing: .02em; }
+    .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: stretch; margin-top: 40px; }
+    .plan { display: flex; flex-direction: column; padding: 26px; border: 1px solid var(--line); border-radius: 20px; background: #fff; }
+    .plan.featured { border-color: #1A1C1A; background: var(--ink); color: #fff; box-shadow: 0 30px 60px -32px rgba(12, 13, 12, .6); }
+    .plan-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 28px; }
+    .plan-name { font-size: .95rem; font-weight: 700; letter-spacing: -.01em; }
+    .popular { padding: 4px 8px; border-radius: 6px; background: var(--lime); color: #1E2B14; font-size: 9px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+    .plan-desc { min-height: 2.6em; margin-top: 6px; font-size: .84rem; line-height: 1.5; color: var(--muted); }
+    .plan.featured .plan-desc { color: #9FA79F; }
+    .plan-price { display: flex; align-items: baseline; gap: 4px; margin-top: 20px; }
+    .price-prefix { font-size: .9rem; font-weight: 600; color: var(--muted); }
+    .price-num { font-size: 2.5rem; font-weight: 700; letter-spacing: -.055em; line-height: 1; }
+    .price-unit { margin-left: 2px; font-size: 10.5px; line-height: 1.35; color: var(--soft); }
+    .price-unit span { display: block; }
+    .plan.featured .price-prefix, .plan.featured .price-unit { color: #9AA29A; }
+    .billing-note { min-height: 16px; margin-top: 8px; font-size: 10.5px; color: var(--soft); }
+    .plan-list { display: flex; flex-direction: column; gap: 10px; margin: 22px 0 26px; list-style: none; font-size: .84rem; }
+    .plan-list li { display: flex; align-items: flex-start; gap: 8px; color: #4A504A; }
+    .plan.featured .plan-list li { color: #D2D8D1; }
+    .check { display: grid; place-items: center; width: 15px; height: 15px; flex: none; margin-top: 2px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-size: 8px; font-weight: 700; line-height: 1; }
+    .check svg { width: 8px; height: 8px; }
+    .plan.featured .check { background: rgba(216, 242, 124, .16); color: var(--lime); }
+    .plan .btn { width: 100%; margin-top: auto; }
+    .plan.featured .btn-primary { background: var(--lime); color: #17210E; }
+    .plan.featured .btn-primary:hover { background: #E5F7A2; color: #17210E; }
+    .plan-foot { margin-top: 10px; text-align: center; font-size: 10px; color: var(--soft); }
+    .plan.featured .plan-foot { color: #8C948C; }
+    .price-num.pop { animation: pop .32s var(--ease); }
+    @keyframes pop { 0% { opacity: .4; transform: translateY(3px); } 100% { opacity: 1; transform: none; } }
+
+    /* ============================================================
+       FAQ
+       ============================================================ */
+    .faq-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(32px, 5vw, 72px); align-items: start; }
+    .faq-aside { position: sticky; top: 100px; }
+    .faq-contact { margin-top: 24px; font-size: .9rem; line-height: 1.65; color: var(--muted); }
+    .faq-contact a { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+    .faq-list { border-top: 1px solid var(--line); }
+    .faq-item { border-bottom: 1px solid var(--line); }
+    .faq-item summary {
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      padding: 20px 0; list-style: none; cursor: pointer;
+      font-size: .96rem; font-weight: 600; letter-spacing: -.01em;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary:hover { color: var(--accent); }
+    .faq-icon { position: relative; width: 18px; height: 18px; flex: none; transition: transform .25s var(--ease); }
+    .faq-icon::before, .faq-icon::after { content: ""; position: absolute; border-radius: 2px; background: currentColor; }
+    .faq-icon::before { top: 8px; left: 0; width: 18px; height: 1.5px; }
+    .faq-icon::after { top: 0; left: 8px; width: 1.5px; height: 18px; }
+    .faq-item[open] .faq-icon { transform: rotate(45deg); }
+    .faq-body { padding: 0 32px 20px 0; }
+    .faq-body p { max-width: 56ch; font-size: .9rem; line-height: 1.65; color: var(--muted); }
+
+    /* ============================================================
+       Final CTA
+       ============================================================ */
+    .cta-band { position: relative; overflow: hidden; padding: clamp(44px, 7vw, 78px); border-radius: 30px; background: #0C0D0C; color: #fff; text-align: center; }
+    .cta-band::before {
+      content: ""; position: absolute; top: -220px; left: 50%; width: 720px; height: 520px; transform: translateX(-50%); pointer-events: none;
+      background: radial-gradient(closest-side, rgba(14, 92, 67, .75), transparent 72%);
+    }
+    .cta-band::after {
+      content: ""; position: absolute; right: -80px; bottom: -260px; width: 560px; height: 420px; pointer-events: none;
+      background: radial-gradient(closest-side, rgba(216, 242, 124, .14), transparent 70%);
+    }
+    .cta-content { position: relative; }
+    .cta-band h2 { max-width: 18ch; margin: 0 auto; font-size: clamp(2rem, 4.4vw, 3.25rem); font-weight: 700; line-height: 1.05; letter-spacing: -.045em; text-wrap: balance; }
+    .cta-band h2 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--lime); letter-spacing: -.02em; }
+    .cta-band p { max-width: 480px; margin: 18px auto 0; font-size: .98rem; line-height: 1.65; color: #A5ADA5; }
+    .cta-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+    .cta-small { margin-top: 18px; font-size: 11px; color: #7E857E; }
+
+    /* ============================================================
+       Footer
+       ============================================================ */
+    .footer { padding: clamp(44px, 6vw, 60px) 0 28px; border-top: 1px solid var(--line); }
+    .footer-grid { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 32px; }
+    .footer-brand p { max-width: 280px; margin-top: 14px; font-size: .85rem; line-height: 1.65; color: var(--muted); }
+    .footer-col h3 { margin-bottom: 14px; font-size: 10.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--soft); }
+    .footer-col a { display: block; padding: 4px 0; font-size: .85rem; color: #4A504A; transition: color .2s; }
+    .footer-col a:hover { color: var(--accent); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 11px; color: var(--soft); }
+    .footer-legal { display: flex; flex-wrap: wrap; gap: 16px; }
+    .footer-legal a:hover, .footer-social a:hover { color: var(--ink); }
+    .footer-social { display: flex; gap: 16px; }
+
+    /* ============================================================
+       Skip link
+       ============================================================ */
+    .skip-link {
+      position: fixed; top: 12px; left: 12px; z-index: 100;
+      padding: 11px 16px; border-radius: 10px;
+      background: var(--ink); color: #fff;
+      font-size: 13px; font-weight: 600;
+      transform: translateY(-170%);
+      transition: transform .2s var(--ease);
+    }
+    .skip-link:focus { transform: none; }
+    #main:focus { outline: none; }
+    body.has-dialog { overflow: hidden; }
+
+    /* ============================================================
+       Signup dialog
+       ============================================================ */
+    .signup-dialog {
+      width: min(480px, calc(100% - 32px));
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      padding: 0; border: 0; border-radius: 24px;
+      background: #fff; color: var(--ink);
+      box-shadow: 0 50px 120px -40px rgba(12, 13, 12, .6);
+      overflow: auto; overscroll-behavior: contain;
+    }
+    .signup-dialog::backdrop {
+      background: rgba(12, 13, 12, .5);
+      -webkit-backdrop-filter: blur(7px);
+      backdrop-filter: blur(7px);
+    }
+    .signup-dialog[open] { animation: dialog-in .34s var(--ease); }
+    .signup-dialog[open]::backdrop { animation: backdrop-in .3s ease; }
+    @keyframes dialog-in { from { opacity: 0; transform: translateY(16px) scale(.975); } }
+    @keyframes backdrop-in { from { opacity: 0; } }
+    .signup-card { padding: clamp(24px, 5.5vw, 34px); }
+    .signup-close {
+      position: sticky; top: 14px; z-index: 2;
+      display: grid; place-items: center; width: 36px; height: 36px;
+      margin: 14px 14px -50px auto;
+      border: 1px solid var(--line); border-radius: 50%;
+      background: #FBFBF9; color: var(--muted); cursor: pointer;
+      transition: background .2s, color .2s, border-color .2s, transform .2s var(--ease);
+    }
+    .signup-close:hover { background: var(--paper); color: var(--ink); border-color: var(--line-strong); transform: rotate(90deg); }
+    .signup-close svg { width: 15px; height: 15px; }
+    .signup-head { padding-right: 34px; }
+    .signup-head h2 {
+      margin-top: 12px;
+      font-size: clamp(1.65rem, 4.4vw, 2rem); font-weight: 700;
+      line-height: 1.08; letter-spacing: -.04em; text-wrap: balance;
+    }
+    .signup-head h2:focus { outline: none; }
+    .signup-head p { margin-top: 10px; font-size: 13.5px; line-height: 1.6; color: var(--muted); }
+    .signup-form { display: grid; gap: 15px; margin-top: 24px; }
+    .signup-form[hidden] { display: none; }
+    .field { display: grid; gap: 6px; }
+    .field label { font-size: 12.5px; font-weight: 600; letter-spacing: -.005em; color: var(--body); }
+    .field label span { font-weight: 500; color: var(--soft); }
+    .field input {
+      width: 100%; height: 48px; padding: 0 14px;
+      border: 1px solid var(--line-strong); border-radius: 11px;
+      background: #FBFBF9; font: inherit; font-size: 14px; color: var(--ink);
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    .field input::placeholder { color: #A6ABA4; }
+    .field input:hover { border-color: #BFC3B8; }
+    .field input:focus {
+      outline: none; background: #fff; border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(14, 92, 67, .13);
+    }
+    .field.has-error input { border-color: #B8442F; background: #FFF9F7; }
+    .field.has-error input:focus { box-shadow: 0 0 0 3px rgba(184, 68, 47, .12); }
+    .field-error { display: none; font-size: 11.5px; line-height: 1.45; color: #AE3C27; }
+    .field.has-error .field-error { display: block; }
+    .signup-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+    .signup-alert {
+      padding: 10px 12px; border: 1px solid #E7C4BB; border-radius: 9px;
+      background: #FFF6F3; font-size: 12px; line-height: 1.55; color: #8F3523;
+    }
+    .signup-alert[hidden] { display: none; }
+    .signup-submit { width: 100%; height: 50px; margin-top: 3px; }
+    .signup-submit.is-loading { pointer-events: none; opacity: .85; }
+    .signup-submit.is-loading svg { display: none; }
+    .signup-submit.is-loading::before {
+      content: ""; width: 15px; height: 15px;
+      border: 2px solid rgba(255, 255, 255, .35); border-top-color: #fff;
+      border-radius: 50%; animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .signup-note { font-size: 10.5px; line-height: 1.55; color: var(--soft); text-align: center; }
+    .signup-note a { color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
+    .signup-note a:hover { color: var(--accent); }
+    .signup-success { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 24px; text-align: center; }
+    .signup-success[hidden] { display: none; }
+    .success-icon { display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+    .success-icon svg { width: 26px; height: 26px; }
+    .signup-success p { max-width: 34ch; font-size: 14px; line-height: 1.65; color: var(--muted); }
+    .signup-success-text { display: grid; justify-items: center; gap: 7px; }
+    .signup-email {
+      max-width: 100%; padding: 5px 10px;
+      border: 1px solid var(--line); border-radius: 7px; background: var(--paper);
+      font-size: 12.5px; line-height: 1.45; color: var(--ink); overflow-wrap: anywhere;
+    }
+    .signup-success .signup-success-note { font-size: 12px; color: var(--soft); }
+    .signup-success .btn { width: 100%; margin-top: 4px; }
+
+    /* ============================================================
+       Reveal on scroll
+       ============================================================ */
+    .js .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s var(--ease), transform .7s var(--ease); transition-delay: var(--d, 0ms); }
+    .js .reveal.is-visible { opacity: 1; transform: none; }
+
+    /* ============================================================
+       Responsive
+       ============================================================ */
+    @media (max-width: 1040px) {
+      .float-card { display: none; }
+      .app-body { grid-template-columns: 160px minmax(0, 1fr); }
+      .hero-visual { max-width: 920px; }
+    }
+    @media (max-width: 980px) {
+      .feature-wide, .feature-small { grid-column: span 3; }
+      .feature-small:last-child { grid-column: span 6; }
+      .feature p { max-width: none; }
+    }
+    @media (max-width: 900px) {
+      .nav-links, .nav-cta { display: none; }
+      .nav-toggle { display: flex; margin-left: auto; }
+      .mobile-menu { display: block; }
+      .faq-grid { grid-template-columns: 1fr; gap: 32px; }
+      .faq-aside { position: static; }
+      .plans { grid-template-columns: 1fr; max-width: 540px; margin-inline: auto; }
+      .pricing-head { flex-direction: column; align-items: flex-start; gap: 24px; }
+    }
+    @media (max-width: 860px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 28px 24px; }
+      .testi-grid { grid-template-columns: 1fr; max-width: 560px; margin-inline: auto; }
+      .steps { grid-template-columns: 1fr; max-width: 560px; margin-inline: auto; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: 1 / -1; }
+      .footer-col:last-of-type { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; }
+      .footer-col:last-of-type h3 { grid-column: 1 / -1; }
+    }
+    @media (max-width: 820px) {
+      .app-body { grid-template-columns: 1fr; min-height: 0; }
+      .app-side { display: none; }
+      .app-main { padding: 16px; }
+    }
+    @media (max-width: 760px) {
+      .feature-wide, .feature-small, .feature-small:last-child { grid-column: span 6; }
+      .feature { padding: 24px; }
+      .section-head h2 { max-width: none; }
+      .logo-row { gap: 14px 30px; }
+      .logo-word { font-size: 16px; }
+      .logo-word.serif { font-size: 21px; }
+      .chart { height: 92px; }
+      .hero-badge { font-size: 11.5px; }
+    }
+    @media (max-width: 640px) {
+      .container { width: calc(100% - 32px); }
+      .nav-inner { height: 66px; }
+      .mobile-menu { top: 76px; }
+      .hero { padding-top: 112px; }
+      .hero h1 { max-width: 13ch; }
+      .hero-sub { margin-top: 20px; }
+      .search-pill { display: none; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      .stat-card:nth-child(3) { display: none; }
+      .security { flex-direction: column; align-items: flex-start; }
+      .faq-body { padding-right: 0; }
+      .cta-band { border-radius: 24px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 560px) {
+      .board-col:nth-child(3) { display: none; }
+      .board { grid-template-columns: 1fr 1fr; }
+      .rows { display: none; }
+      .plan { padding: 22px; }
+      .stats-band { border-radius: 22px; }
+      .logo-row { gap: 12px 24px; }
+    }
+    @media (max-width: 480px) {
+      .hero-actions, .cta-actions { flex-direction: column; }
+      .hero-actions .btn, .cta-actions .btn { width: 100%; }
+      .hero-trust { gap: 6px 14px; font-size: 11px; }
+      .chart-axis span:nth-child(2) { display: none; }
+      .badge-chip { font-size: 9.5px; }
+      .billing { width: 100%; }
+      .billing button { flex: 1; justify-content: center; }
+      .footer-grid { gap: 24px 16px; }
+      .signup-dialog {
+        width: calc(100% - 20px);
+        max-height: calc(100vh - 20px);
+        max-height: calc(100dvh - 20px);
+        border-radius: 20px;
+      }
+      .signup-card { padding: 24px 20px 22px; }
+      .signup-close { top: 12px; margin: 12px 12px -48px auto; }
+      .signup-form { gap: 13px; margin-top: 20px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .js .reveal { opacity: 1; transform: none; }
+      .float-a, .float-b { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Langsung ke konten</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#top" aria-label="Jernih, kembali ke atas">
+        <svg viewBox="0 0 28 28" aria-hidden="true">
+          <rect width="28" height="28" rx="8" fill="#0E5C43"></rect>
+          <path d="M8 10h12M8 14h8M8 18h4" stroke="#fff" stroke-width="2" stroke-linecap="round"></path>
+        </svg>
+        Jernih
+      </a>
+      <nav class="nav-links" aria-label="Navigasi utama">
+        <a href="#fitur">Fitur</a>
+        <a href="#cara-kerja">Cara kerja</a>
+        <a href="#harga">Harga</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="nav-cta">
+        <a class="nav-login" href="#">Masuk</a>
+        <button class="btn btn-primary btn-sm" type="button" data-signup aria-haspopup="dialog" aria-controls="signup-dialog">Coba gratis</button>
+      </div>
+      <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a class="mm-link" href="#fitur">Fitur</a>
+    <a class="mm-link" href="#cara-kerja">Cara kerja</a>
+    <a class="mm-link" href="#harga">Harga</a>
+    <a class="mm-link" href="#faq">FAQ</a>
+    <div class="mm-actions">
+      <a class="btn btn-secondary" href="#">Masuk</a>
+      <button class="btn btn-primary" type="button" data-signup aria-haspopup="dialog" aria-controls="signup-dialog">Coba gratis</button>
+    </div>
+  </div>
+
+  <main id="main" tabindex="-1">
+    <section class="hero" id="top">
+      <div class="container">
+        <div class="hero-inner">
+          <a class="hero-badge reveal" href="#fitur">
+            <span class="badge-new">Baru</span>
+            <span>Jernih AI kini tersedia</span>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 10h12m0 0-5-5m5 5-5 5"></path>
+            </svg>
+          </a>
+          <h1 class="reveal" style="--d:60ms">Kerja tim jadi <em>lebih jernih</em>, tanpa menambah rapat.</h1>
+          <p class="hero-sub reveal" style="--d:120ms">
+            Jernih menyatukan tugas, dokumen, dan insight dalam satu workspace yang ringan.
+            Tim tahu apa yang harus dikerjakan, tanpa perlu bertanya lagi.
+          </p>
+          <div class="hero-actions reveal" style="--d:180ms">
+            <button class="btn btn-primary" type="button" data-signup aria-haspopup="dialog" aria-controls="signup-dialog">
+              Mulai gratis
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 10h12m0 0-5-5m5 5-5 5"></path>
+              </svg>
+            </button>
+            <a class="btn btn-secondary" href="#cara-kerja">
+              Lihat cara kerja
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M10 4v12m0 0-5-5m5 5 5-5"></path>
+              </svg>
+            </a>
+          </div>
+          <div class="hero-trust reveal" style="--d:240ms">
+            <span>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8.3 3.1 3.2L13 4.8"></path></svg>
+              Gratis 14 hari
+            </span>
+            <span>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8.3 3.1 3.2L13 4.8"></path></svg>
+              Tanpa kartu kredit
+            </span>
+            <span>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8.3 3.1 3.2L13 4.8"></path></svg>
+              Setup 2 menit
+            </span>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal" style="--d:280ms">
+          <div class="app" role="img" aria-label="Pratinjau dashboard Jernih: overview proyek tim, grafik aktivitas, dan daftar tugas.">
+            <div class="app-bar">
+              <span class="win-dot"></span>
+              <span class="win-dot"></span>
+              <span class="win-dot"></span>
+              <span class="url-pill">app.jernih.id/overview</span>
+            </div>
+            <div class="app-body">
+              <aside class="app-side">
+                <div class="side-brand"><span class="side-logo">J</span> Jernih</div>
+                <span class="side-item is-active">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1.2"></rect><rect x="9" y="2" width="5" height="5" rx="1.2"></rect><rect x="2" y="9" width="5" height="5" rx="1.2"></rect><rect x="9" y="9" width="5" height="5" rx="1.2"></rect></svg>
+                  Overview
+                </span>
+                <span class="side-item">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M2 4.5h4l1.3 1.7H14v6.3a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 12.5V4.5Z"></path></svg>
+                  Proyek
+                </span>
+                <span class="side-item">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h5l3 3v9H4V2Z"></path><path d="M9 2v3h3"></path></svg>
+                  Dokumen
+                </span>
+                <span class="side-item">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="6" r="2.2"></circle><path d="M2.5 13c0-2 1.6-3.2 3.5-3.2s3.5 1.2 3.5 3.2"></path><path d="M11 4.2a2 2 0 0 1 0 3.6M12 9.9c1.2.4 2 1.4 2 3.1"></path></svg>
+                  Tim
+                </span>
+                <div class="side-label">Ruang kerja</div>
+                <span class="side-item"><span class="dot-mini" style="background:#D8F27C"></span>Produk</span>
+                <span class="side-item"><span class="dot-mini" style="background:#9CC7FF"></span>Marketing</span>
+                <span class="side-item"><span class="dot-mini" style="background:#FFC9A8"></span>Operasional</span>
+                <div class="side-card">
+                  <strong>Progres sprint</strong>
+                  <div class="side-bar"><span></span></div>
+                  <span class="side-note">72% selesai</span>
+                </div>
+              </aside>
+              <div class="app-main">
+                <div class="app-top">
+                  <div>
+                    <span class="app-title">Overview</span>
+                    <span class="app-sub">Ringkasan tim Produk · Oktober</span>
+                  </div>
+                  <div class="app-top-right">
+                    <span class="search-pill">Cari apa pun...</span>
+                    <span class="avatar">RK</span>
+                  </div>
+                </div>
+                <div class="stat-grid">
+                  <div class="stat-card">
+                    <span class="stat-label">Pendapatan</span>
+                    <div class="stat-value"><strong>Rp842jt</strong><span class="delta">+18,4%</span></div>
+                  </div>
+                  <div class="stat-card">
+                    <span class="stat-label">Pengguna aktif</span>
+                    <div class="stat-value"><strong>12.480</strong><span class="delta">+6,2%</span></div>
+                  </div>
+                  <div class="stat-card">
+                    <span class="stat-label">Task selesai</span>
+                    <div class="stat-value"><strong>386</strong><span class="delta">+24,1%</span></div>
+                  </div>
+                </div>
+                <div class="chart-card">
+                  <div class="chart-head">
+                    <div><strong>Aktivitas tim</strong><span>30 hari terakhir</span></div>
+                    <span class="chart-chip">Live</span>
+                  </div>
+                  <svg class="chart" viewBox="0 0 520 160" preserveAspectRatio="none" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#0E5C43" stop-opacity=".2"></stop>
+                        <stop offset="100%" stop-color="#0E5C43" stop-opacity="0"></stop>
+                      </linearGradient>
+                    </defs>
+                    <g stroke="#EFF0EB" stroke-width="1">
+                      <line x1="0" y1="30" x2="520" y2="30"></line>
+                      <line x1="0" y1="70" x2="520" y2="70"></line>
+                      <line x1="0" y1="110" x2="520" y2="110"></line>
+                      <line x1="0" y1="150" x2="520" y2="150"></line>
+                    </g>
+                    <path d="M0 132 C32 124 46 112 78 118 S132 100 164 104 S214 76 246 82 S300 54 332 62 S384 32 416 40 S474 18 520 26 L520 160 L0 160 Z" fill="url(#areaGrad)"></path>
+                    <path d="M0 132 C32 124 46 112 78 118 S132 100 164 104 S214 76 246 82 S300 54 332 62 S384 32 416 40 S474 18 520 26" fill="none" stroke="#0E5C43" stroke-width="2.2" stroke-linecap="round"></path>
+                    <circle cx="416" cy="40" r="3.5" fill="#0E5C43" stroke="#fff" stroke-width="2"></circle>
+                  </svg>
+                  <div class="chart-axis"><span>1 Okt</span><span>15 Okt</span><span>25 Okt</span></div>
+                </div>
+                <div class="rows">
+                  <div class="row">
+                    <span class="row-av" style="background:#E7F4EC;color:#177A53">LP</span>
+                    <div class="row-main"><strong>Launching halaman pricing</strong><span>Produk · 2 jam lagi</span></div>
+                    <span class="status done">Selesai</span>
+                  </div>
+                  <div class="row">
+                    <span class="row-av" style="background:#EAF0FD;color:#3563C7">RK</span>
+                    <div class="row-main"><strong>Riset onboarding pengguna baru</strong><span>Riset · Hari ini</span></div>
+                    <span class="status progress">Berjalan</span>
+                  </div>
+                  <div class="row">
+                    <span class="row-av" style="background:#FDF1E3;color:#A76A17">ML</span>
+                    <div class="row-main"><strong>Update changelog v2.4</strong><span>Marketing · Besok</span></div>
+                    <span class="status review">Review</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="float-card float-a" aria-hidden="true">
+            <div class="float-head"><span class="pulse"></span>12 anggota online</div>
+            <div class="float-avatars"><span>RK</span><span>AP</span><span>ML</span><span class="more">+9</span></div>
+          </div>
+          <div class="float-card float-b" aria-hidden="true">
+            <span class="float-label">Rapat minggu ini</span>
+            <strong>−38%</strong>
+            <span class="float-sub">dibanding bulan lalu</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="logos" aria-label="Dipercaya oleh tim modern">
+      <div class="container">
+        <p class="logos-label">Dipercaya 12.400+ tim modern</p>
+        <div class="logo-row">
+          <span class="logo-word">Loka</span>
+          <span class="logo-word serif">Arunika</span>
+          <span class="logo-word mono">Kirim</span>
+          <span class="logo-word">binar.</span>
+          <span class="logo-word mono">Northstar</span>
+          <span class="logo-word serif">Sagara</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="fitur">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Fitur</span>
+          <h2>Semua yang dibutuhkan tim. Tanpa yang tidak.</h2>
+          <p>Kami membuang fitur yang hanya menambah kerumitan. Yang tersisa adalah alat yang benar-benar dipakai setiap hari.</p>
+        </div>
+
+        <div class="features-grid">
+          <article class="feature feature-wide reveal">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3 3 8l9 5 9-5-9-5Z"></path>
+                <path d="m3 13 9 5 9-5"></path>
+              </svg>
+            </div>
+            <h3>Satu tempat untuk semua konteks</h3>
+            <p>Dokumen, task, dan diskusi hidup berdampingan. Tidak ada lagi tab berpencar atau tautan yang hilang.</p>
+            <div class="feature-visual">
+              <div class="board" aria-hidden="true">
+                <div class="board-col">
+                  <div class="board-head"><span>Hari ini</span><span>3</span></div>
+                  <div class="task"><span class="t-dot" style="background:#F2A65A"></span><span class="t-title">Riset onboarding baru</span><span class="t-av">RK</span></div>
+                  <div class="task"><span class="t-dot" style="background:#7FB77E"></span><span class="t-title">Finalisasi copy pricing</span><span class="t-av">AP</span></div>
+                  <div class="task ghost">+ Tambah task</div>
+                </div>
+                <div class="board-col">
+                  <div class="board-head"><span>Dikerjakan</span><span>2</span></div>
+                  <div class="task"><span class="t-dot" style="background:#6C9BE8"></span><span class="t-title">Redesign halaman harga</span><span class="t-av">ML</span></div>
+                  <div class="task"><span class="t-dot" style="background:#F2A65A"></span><span class="t-title">Uji alur undang anggota</span><span class="t-av">AP</span></div>
+                </div>
+                <div class="board-col">
+                  <div class="board-head"><span>Selesai</span><span>2</span></div>
+                  <div class="task done">
+                    <span class="t-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.5 6.2 2.5 2.3 4.5-5"></path></svg></span>
+                    <span class="t-title">Rilis changelog v2.4</span>
+                  </div>
+                  <div class="task done">
+                    <span class="t-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.5 6.2 2.5 2.3 4.5-5"></path></svg></span>
+                    <span class="t-title">Setup analytics</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="feature feature-wide reveal" style="--d:80ms">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+                <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"></path>
+              </svg>
+            </div>
+            <h3>Otomatisasi yang masuk akal</h3>
+            <p>Ubah pekerjaan berulang menjadi alur otomatis dalam hitungan menit. Tanpa baris kode, tanpa drama.</p>
+            <div class="feature-visual">
+              <div class="flow" aria-hidden="true">
+                <div class="flow-step">
+                  <span class="flow-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h10M3 8h6M3 12h8"></path></svg></span>
+                  <div class="flow-body"><strong>Form diisi</strong><span>Trigger · Form publik</span></div>
+                </div>
+                <div class="flow-link"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v8m0 0-3-3m3 3 3-3"></path></svg></div>
+                <div class="flow-step">
+                  <span class="flow-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v12M2 8h12"></path></svg></span>
+                  <div class="flow-body"><strong>Task dibuat otomatis</strong><span>Aksi · Proyek Onboarding</span></div>
+                </div>
+                <div class="flow-link"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v8m0 0-3-3m3 3 3-3"></path></svg></div>
+                <div class="flow-step">
+                  <span class="flow-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2a4 4 0 0 0-4 4v2.5L2.8 11h10.4L12 8.5V6a4 4 0 0 0-4-4Z"></path><path d="M6.5 13a1.6 1.6 0 0 0 3 0"></path></svg></span>
+                  <div class="flow-body"><strong>Tim diberi tahu</strong><span>Aksi · Slack #onboarding</span></div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="feature feature-small reveal" style="--d:40ms">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+                <path d="M3 20h18"></path>
+                <path d="M6 16v-4"></path>
+                <path d="M11 16V6"></path>
+                <path d="M16 16v-7"></path>
+                <path d="M21 16V9"></path>
+              </svg>
+            </div>
+            <h3>Insight saat masih relevan</h3>
+            <p>Pantau progres dan beban kerja secara real-time, sebelum masalah jadi besar.</p>
+            <div class="feature-visual">
+              <div aria-hidden="true">
+                <div class="bars">
+                  <span class="bar" style="--h:34%"></span>
+                  <span class="bar" style="--h:52%"></span>
+                  <span class="bar" style="--h:40%"></span>
+                  <span class="bar" style="--h:68%"></span>
+                  <span class="bar" style="--h:56%"></span>
+                  <span class="bar" style="--h:82%"></span>
+                  <span class="bar" style="--h:70%"></span>
+                  <span class="bar hi" style="--h:100%"></span>
+                </div>
+                <div class="bar-meta"><span>Beban kerja</span><strong>+24%</strong></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="feature feature-small reveal" style="--d:80ms">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 11.5a7.5 7.5 0 0 1-7.5 7.5H8l-4 2.5V11.5A7.5 7.5 0 0 1 11.5 4h2A7.5 7.5 0 0 1 21 11.5Z"></path>
+              </svg>
+            </div>
+            <h3>Kolaborasi tanpa rapat</h3>
+            <p>Komentar, rekaman singkat, dan keputusan tercatat rapi di tempat yang sama.</p>
+            <div class="feature-visual">
+              <div class="bubbles" aria-hidden="true">
+                <div class="bubble">
+                  <span class="bubble-av" style="background:#E7F4EC;color:#177A53">RK</span>
+                  <div class="bubble-body"><strong>Rani</strong>Versi ini sudah oke. Gas rilis?</div>
+                </div>
+                <div class="bubble right">
+                  <div class="bubble-body"><strong>Adit</strong>Sudah. Aku update changelog-nya.</div>
+                  <span class="bubble-av" style="background:#EAF0FD;color:#3563C7">AP</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="feature feature-small reveal" style="--d:120ms">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7" rx="2"></rect>
+                <rect x="14" y="3" width="7" height="7" rx="2"></rect>
+                <rect x="3" y="14" width="7" height="7" rx="2"></rect>
+                <rect x="14" y="14" width="7" height="7" rx="2"></rect>
+              </svg>
+            </div>
+            <h3>Terhubung dengan alat favorit</h3>
+            <p>Slack, Figma, GitHub, dan 40+ integrasi lain. Jernih mengikuti cara kerja tim Anda.</p>
+            <div class="feature-visual">
+              <div class="pills" aria-hidden="true">
+                <span class="pill"><i style="background:#611F69"></i>Slack</span>
+                <span class="pill"><i style="background:#111111"></i>Notion</span>
+                <span class="pill"><i style="background:#F24E1E"></i>Figma</span>
+                <span class="pill"><i style="background:#24292F"></i>GitHub</span>
+                <span class="pill"><i style="background:#5E6AD2"></i>Linear</span>
+                <span class="pill"><i style="background:#FBBC05"></i>Drive</span>
+                <span class="pill"><i style="background:#2D8CFF"></i>Zoom</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="security reveal">
+          <div class="security-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3 5 6v5.5c0 4.4 3 7.5 7 9 4-1.5 7-4.6 7-9V6l-7-3Z"></path>
+              <path d="m9 12 2 2 4-4.5"></path>
+            </svg>
+            Aman untuk tim yang paling ketat
+          </div>
+          <div class="badges">
+            <span class="badge-chip">SOC 2 Type II</span>
+            <span class="badge-chip">SSO &amp; SCIM</span>
+            <span class="badge-chip">Enkripsi AES-256</span>
+            <span class="badge-chip">Data di Asia Tenggara</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-white" id="cara-kerja">
+      <div class="container">
+        <div class="section-head center reveal">
+          <span class="eyebrow">Cara kerja</span>
+          <h2>Dari kacau jadi teratur dalam satu sore.</h2>
+          <p>Tidak perlu konsultan, tidak perlu training berhari-hari. Tiga langkah, tim langsung jalan.</p>
+        </div>
+        <div class="steps">
+          <div class="step reveal">
+            <span class="step-num">01</span>
+            <h3>Hubungkan</h3>
+            <p>Impor proyek dari alat lama atau mulai dari template. Data lama tetap utuh dan bisa diakses kapan saja.</p>
+          </div>
+          <div class="step reveal" style="--d:80ms">
+            <span class="step-num">02</span>
+            <h3>Atur</h3>
+            <p>Susun ruang kerja sesuai ritme tim. Undang anggota dengan peran yang jelas sejak menit pertama.</p>
+          </div>
+          <div class="step reveal" style="--d:160ms">
+            <span class="step-num">03</span>
+            <h3>Jalankan</h3>
+            <p>Biarkan otomatisasi mengambil alih rutinitas. Tim fokus pada pekerjaan nyata, bukan update status.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Jernih dalam angka">
+      <div class="container">
+        <div class="stats-band reveal">
+          <div class="stats-grid">
+            <div class="stat-block">
+              <strong>12.400<em>+</em></strong>
+              <span>tim aktif setiap minggu</span>
+            </div>
+            <div class="stat-block">
+              <strong>38<em>%</em></strong>
+              <span>lebih sedikit rapat sinkron</span>
+            </div>
+            <div class="stat-block">
+              <strong>99,99<em>%</em></strong>
+              <span>uptime 12 bulan terakhir</span>
+            </div>
+            <div class="stat-block">
+              <strong>4,9<em>/5</em></strong>
+              <span>rating dari 2.100 ulasan</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="cerita">
+      <div class="container">
+        <div class="section-head center reveal">
+          <span class="eyebrow">Cerita pengguna</span>
+          <h2>Tim yang sudah bernapas lebih lega.</h2>
+          <p>Dari startup tahap awal sampai tim produk ratusan orang, mereka mengurangi kebisingan dan menambah progres.</p>
+        </div>
+        <div class="testi-grid">
+          <figure class="testi reveal">
+            <div class="stars" role="img" aria-label="5 dari 5 bintang">★★★★★</div>
+            <blockquote>“Sebelum Jernih, status proyek selalu jadi bahan rapat Senin. Sekarang semua orang bisa lihat sendiri, kapan saja.”</blockquote>
+            <figcaption class="testi-foot">
+              <span class="testi-av" aria-hidden="true">RK</span>
+              <div><strong>Rani Kusuma</strong><span>Head of Product, Loka</span></div>
+            </figcaption>
+          </figure>
+          <figure class="testi reveal" style="--d:80ms">
+            <div class="stars" role="img" aria-label="5 dari 5 bintang">★★★★★</div>
+            <blockquote>“Migrasi 8 tim selesai dalam dua hari. Yang paling saya suka: tidak ada yang perlu diajari dua kali.”</blockquote>
+            <figcaption class="testi-foot">
+              <span class="testi-av" aria-hidden="true">AP</span>
+              <div><strong>Aditya Pratama</strong><span>COO, Kirim</span></div>
+            </figcaption>
+          </figure>
+          <figure class="testi reveal" style="--d:160ms">
+            <div class="stars" role="img" aria-label="5 dari 5 bintang">★★★★★</div>
+            <blockquote>“Akhirnya desain, engineering, dan bisnis melihat versi kebenaran yang sama. Keputusan jadi jauh lebih cepat.”</blockquote>
+            <figcaption class="testi-foot">
+              <span class="testi-av" aria-hidden="true">ML</span>
+              <div><strong>Maya Lim</strong><span>Design Lead, Northstar</span></div>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="harga">
+      <div class="container">
+        <div class="pricing-head">
+          <div class="section-head reveal">
+            <span class="eyebrow">Harga</span>
+            <h2>Sederhana, seperti seharusnya.</h2>
+            <p>Mulai gratis, lalu naik saat tim Anda tumbuh. Tanpa biaya tersembunyi.</p>
+          </div>
+          <div class="billing reveal" style="--d:80ms" role="group" aria-label="Periode pembayaran">
+            <button type="button" class="is-active" data-billing="monthly" aria-pressed="true">Bulanan</button>
+            <button type="button" data-billing="yearly" aria-pressed="false">Tahunan <span class="save-tag">Hemat 20%</span></button>
+          </div>
+        </div>
+
+        <div class="plans">
+          <article class="plan reveal">
+            <div class="plan-head"><span class="plan-name">Gratis</span></div>
+            <p class="plan-desc">Untuk mencoba dan tim kecil yang baru mulai rapi.</p>
+            <div class="plan-price">
+              <span class="price-prefix">Rp</span>
+              <span class="price-num">0</span>
+              <span class="price-unit">selamanya<span>tanpa kartu kredit</span></span>
+            </div>
+            <p class="billing-note">Cocok untuk 1–3 orang</p>
+            <ul class="plan-list">
+              <li><span class="check" aria-hidden="true">✓</span>Hingga 3 anggota</li>
+              <li><span class="check" aria-hidden="true">✓</span>5 proyek aktif</li>
+              <li><span class="check" aria-hidden="true">✓</span>1 GB penyimpanan</li>
+              <li><span class="check" aria-hidden="true">✓</span>Integrasi dasar</li>
+              <li><span class="check" aria-hidden="true">✓</span>Dukungan komunitas</li>
+            </ul>
+            <button class="btn btn-secondary" type="button" data-signup data-signup-plan="free" aria-haspopup="dialog" aria-controls="signup-dialog">Mulai gratis</button>
+            <p class="plan-foot">Aktif selamanya</p>
+          </article>
+
+          <article class="plan featured reveal" style="--d:80ms">
+            <div class="plan-head"><span class="plan-name">Pro</span><span class="popular">Paling populer</span></div>
+            <p class="plan-desc">Untuk tim yang butuh kecepatan, otomatisasi, dan insight.</p>
+            <div class="plan-price">
+              <span class="price-prefix">Rp</span>
+              <span class="price-num" data-monthly="149" data-yearly="119">149</span>
+              <span class="price-unit">rb<span>/pengguna/bulan</span></span>
+            </div>
+            <p class="billing-note" data-billing-note>Ditagih bulanan</p>
+            <ul class="plan-list">
+              <li><span class="check" aria-hidden="true">✓</span>Semua di paket Gratis</li>
+              <li><span class="check" aria-hidden="true">✓</span>Anggota tanpa batas</li>
+              <li><span class="check" aria-hidden="true">✓</span>100 GB penyimpanan</li>
+              <li><span class="check" aria-hidden="true">✓</span>Otomatisasi alur kerja</li>
+              <li><span class="check" aria-hidden="true">✓</span>Analitik dan laporan</li>
+              <li><span class="check" aria-hidden="true">✓</span>Dukungan prioritas</li>
+            </ul>
+            <button class="btn btn-primary" type="button" data-signup data-signup-plan="pro" aria-haspopup="dialog" aria-controls="signup-dialog">Coba 14 hari</button>
+            <p class="plan-foot">Tanpa kartu kredit</p>
+          </article>
+
+          <article class="plan reveal" style="--d:160ms">
+            <div class="plan-head"><span class="plan-name">Enterprise</span></div>
+            <p class="plan-desc">Untuk organisasi dengan kebutuhan keamanan dan skala.</p>
+            <div class="plan-price">
+              <span class="price-num" style="font-size:1.9rem">Custom</span>
+            </div>
+            <p class="billing-note">Disesuaikan dengan kebutuhan</p>
+            <ul class="plan-list">
+              <li><span class="check" aria-hidden="true">✓</span>Semua di paket Pro</li>
+              <li><span class="check" aria-hidden="true">✓</span>SSO &amp; SCIM</li>
+              <li><span class="check" aria-hidden="true">✓</span>Log audit dan kontrol akses</li>
+              <li><span class="check" aria-hidden="true">✓</span>SLA 99,99%</li>
+              <li><span class="check" aria-hidden="true">✓</span>Onboarding khusus</li>
+              <li><span class="check" aria-hidden="true">✓</span>Manajer akun</li>
+            </ul>
+            <a class="btn btn-secondary" href="mailto:halo@jernih.id">Hubungi sales</a>
+            <p class="plan-foot">Respons dalam 1 hari kerja</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="faq-grid">
+          <div class="faq-aside reveal">
+            <div class="section-head">
+              <span class="eyebrow">FAQ</span>
+              <h2>Pertanyaan yang sering muncul.</h2>
+              <p>Belum menemukan jawaban? Kami manusia sungguhan dan senang membantu.</p>
+            </div>
+            <p class="faq-contact">Masih ragu? <a href="mailto:halo@jernih.id">Bicara dengan tim kami</a>.</p>
+          </div>
+          <div class="faq-list reveal" style="--d:80ms">
+            <details class="faq-item">
+              <summary>Apakah paket Gratis bisa dipakai selamanya?<span class="faq-icon" aria-hidden="true"></span></summary>
+              <div class="faq-body"><p>Ya. Paket Gratis aktif tanpa batas waktu untuk hingga 3 anggota dan 5 proyek. Tidak perlu kartu kredit untuk memulai.</p></div>
+            </details>
+            <details class="faq-item">
+              <summary>Bagaimana cara memindahkan data dari alat lama?<span class="faq-icon" aria-hidden="true"></span></summary>
+              <div class="faq-body"><p>Tersedia importer untuk Notion, Trello, Asana, dan CSV. Untuk paket Enterprise, tim onboarding kami membantu migrasi penuh tanpa downtime.</p></div>
+            </details>
+            <details class="faq-item">
+              <summary>Seberapa aman data saya?<span class="faq-icon" aria-hidden="true"></span></summary>
+              <div class="faq-body"><p>Data dienkripsi saat transit (TLS 1.3) dan saat disimpan (AES-256). Kami tersertifikasi SOC 2 Type II, mendukung SSO/SCIM, dan menyimpan data di region Asia Tenggara.</p></div>
+            </details>
+            <details class="faq-item">
+              <summary>Apakah saya bisa berhenti kapan saja?<span class="faq-icon" aria-hidden="true"></span></summary>
+              <div class="faq-body"><p>Bisa. Batalkan langganan dari pengaturan kapan pun. Anda tetap bisa mengekspor seluruh data selama 30 hari setelah pembatalan.</p></div>
+            </details>
+            <details class="faq-item">
+              <summary>Apakah ada diskon untuk pembayaran tahunan?<span class="faq-icon" aria-hidden="true"></span></summary>
+              <div class="faq-body"><p>Ada. Pembayaran tahunan menghemat 20% dibandingkan bulanan, dan bisa diganti kapan saja dengan penyesuaian prorata.</p></div>
+            </details>
+            <details class="faq-item">
+              <summary>Bagaimana dengan tim di banyak zona waktu?<span class="faq-icon" aria-hidden="true"></span></summary>
+              <div class="faq-body"><p>Jernih dirancang async-first. Komentar, rekaman singkat, dan ringkasan AI membuat semua orang tetap punya konteks, tanpa harus bertemu di jam yang sama.</p></div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="cta-band reveal">
+          <div class="cta-content">
+            <h2>Siap membuat kerja tim <em>lebih jernih</em>?</h2>
+            <p>Mulai gratis hari ini. Ajak tim Anda dan rasakan bedanya di minggu pertama.</p>
+            <div class="cta-actions">
+              <button class="btn btn-light" type="button" data-signup aria-haspopup="dialog" aria-controls="signup-dialog">
+                Mulai gratis
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 10h12m0 0-5-5m5 5-5 5"></path>
+                </svg>
+              </button>
+              <a class="btn btn-outline-light" href="mailto:halo@jernih.id">Bicara dengan kami</a>
+            </div>
+            <p class="cta-small">Setup 2 menit · Tanpa kartu kredit · Batal kapan saja</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="brand" href="#top" aria-label="Jernih, kembali ke atas">
+            <svg viewBox="0 0 28 28" aria-hidden="true">
+              <rect width="28" height="28" rx="8" fill="#0E5C43"></rect>
+              <path d="M8 10h12M8 14h8M8 18h4" stroke="#fff" stroke-width="2" stroke-linecap="round"></path>
+            </svg>
+            Jernih
+          </a>
+          <p>Workspace untuk tim yang ingin bergerak cepat tanpa kehilangan konteks.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Produk</h3>
+          <a href="#fitur">Fitur</a>
+          <a href="#harga">Harga</a>
+          <a href="#cara-kerja">Cara kerja</a>
+          <a href="#">Integrasi</a>
+          <a href="#">Changelog</a>
+        </div>
+        <div class="footer-col">
+          <h3>Perusahaan</h3>
+          <a href="#">Tentang</a>
+          <a href="#">Blog</a>
+          <a href="#">Karier</a>
+          <a href="mailto:halo@jernih.id">Kontak</a>
+        </div>
+        <div class="footer-col">
+          <h3>Sumber daya</h3>
+          <a href="#">Panduan</a>
+          <a href="#">Template</a>
+          <a href="#">Dokumentasi API</a>
+          <a href="#">Status</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year">2026</span> Jernih Labs. Dibuat dengan tenang di Jakarta.</span>
+        <div class="footer-legal">
+          <a href="#">Privasi</a>
+          <a href="#">Syarat</a>
+          <a href="#">Keamanan</a>
+        </div>
+        <div class="footer-social">
+          <a href="#" aria-label="X">X</a>
+          <a href="#" aria-label="LinkedIn">LinkedIn</a>
+          <a href="#" aria-label="GitHub">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <dialog class="signup-dialog" id="signup-dialog" aria-labelledby="signup-title">
+    <button class="signup-close" type="button" data-signup-close aria-label="Tutup pendaftaran">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+        <path d="m4 4 8 8M12 4l-8 8"></path>
+      </svg>
+    </button>
+    <div class="signup-card">
+      <div class="signup-head">
+        <span class="eyebrow" data-signup-eyebrow>Gratis 14 hari</span>
+        <h2 id="signup-title" tabindex="-1">Mulai kerja lebih jernih.</h2>
+        <p data-signup-sub>Buat workspace tim Anda dalam 2 menit. Tanpa kartu kredit.</p>
+      </div>
+
+      <form class="signup-form" id="signup-form" novalidate>
+        <div class="signup-hp" aria-hidden="true">
+          <label for="signup-gotcha">Jangan diisi</label>
+          <input id="signup-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <input type="hidden" name="plan" value="trial" data-signup-plan-field>
+        <div class="field">
+          <label for="signup-name">Nama lengkap</label>
+          <input id="signup-name" name="name" type="text" autocomplete="name" placeholder="Rani Kusuma" required minlength="2" maxlength="80" aria-describedby="signup-name-error">
+          <p class="field-error" id="signup-name-error"></p>
+        </div>
+        <div class="field">
+          <label for="signup-email">Email kerja</label>
+          <input id="signup-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="rani@perusahaan.com" required maxlength="254" aria-describedby="signup-email-error">
+          <p class="field-error" id="signup-email-error"></p>
+        </div>
+        <div class="field">
+          <label for="signup-team">Nama tim <span>(opsional)</span></label>
+          <input id="signup-team" name="team" type="text" autocomplete="organization" placeholder="Tim Produk" maxlength="60">
+        </div>
+        <p class="signup-alert" id="signup-alert" data-signup-alert role="alert" hidden></p>
+        <button class="btn btn-primary signup-submit" type="submit">
+          <span data-submit-label>Buat akun gratis</span>
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 10h12m0 0-5-5m5 5-5 5"></path>
+          </svg>
+        </button>
+        <p class="signup-note">Dengan mendaftar, Anda menyetujui <a href="#">Syarat Layanan</a> dan <a href="#">Kebijakan Privasi</a>.</p>
+      </form>
+
+      <div class="signup-success" data-signup-success hidden>
+        <span class="success-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m5 12.5 4.5 4.5L19 7"></path>
+          </svg>
+        </span>
+        <div class="signup-success-text">
+          <p>Kami akan menghubungi:</p>
+          <strong class="signup-email" data-signup-email></strong>
+          <p class="signup-success-note">Biasanya dalam 1×24 jam kerja.</p>
+        </div>
+        <button class="btn btn-primary" type="button" data-signup-close>Mengerti</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var nav = document.getElementById('nav');
+      var navToggle = document.querySelector('.nav-toggle');
+      var mobileMenu = document.getElementById('mobile-menu');
+      var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      /* Nav shadow on scroll */
+      function onScroll() {
+        nav.classList.toggle('is-scrolled', window.scrollY > 8);
+      }
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      /* Mobile menu */
+      function closeMenu() {
+        mobileMenu.classList.remove('is-open');
+        navToggle.classList.remove('is-open');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.setAttribute('aria-label', 'Buka menu');
+      }
+
+      navToggle.addEventListener('click', function () {
+        var open = !mobileMenu.classList.contains('is-open');
+        mobileMenu.classList.toggle('is-open', open);
+        navToggle.classList.toggle('is-open', open);
+        navToggle.setAttribute('aria-expanded', String(open));
+        navToggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+      });
+
+      mobileMenu.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', closeMenu);
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeMenu();
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!mobileMenu.classList.contains('is-open')) return;
+        if (mobileMenu.contains(event.target) || navToggle.contains(event.target)) return;
+        closeMenu();
+      });
+
+      window.addEventListener('resize', function () {
+        if (window.innerWidth > 900) closeMenu();
+      });
+
+      /* Pricing toggle */
+      var billingButtons = Array.prototype.slice.call(document.querySelectorAll('[data-billing]'));
+      var priceAmounts = Array.prototype.slice.call(document.querySelectorAll('[data-monthly]'));
+      var billingNotes = Array.prototype.slice.call(document.querySelectorAll('[data-billing-note]'));
+
+      function setBilling(period) {
+        billingButtons.forEach(function (btn) {
+          var active = btn.dataset.billing === period;
+          btn.classList.toggle('is-active', active);
+          btn.setAttribute('aria-pressed', String(active));
+        });
+        priceAmounts.forEach(function (el) {
+          el.textContent = el.dataset[period];
+          el.classList.remove('pop');
+          void el.offsetWidth;
+          el.classList.add('pop');
+        });
+        billingNotes.forEach(function (el) {
+          el.textContent = period === 'yearly' ? 'Ditagih tahunan · hemat 20%' : 'Ditagih bulanan';
+        });
+      }
+
+      billingButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setBilling(btn.dataset.billing);
+        });
+      });
+
+      /* FAQ: keep one item open */
+      var faqItems = Array.prototype.slice.call(document.querySelectorAll('.faq-item'));
+      faqItems.forEach(function (item) {
+        item.addEventListener('toggle', function () {
+          if (!item.open) return;
+          faqItems.forEach(function (other) {
+            if (other !== item) other.open = false;
+          });
+        });
+      });
+
+      /* Reveal on scroll */
+      var revealEls = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+      if (reducedMotion.matches || !('IntersectionObserver' in window)) {
+        revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+      } else {
+        var observer = new IntersectionObserver(function (entries, obs) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            obs.unobserve(entry.target);
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -48px 0px' });
+        revealEls.forEach(function (el) { observer.observe(el); });
+      }
+
+      /* Signup dialog */
+      var signupDialog = document.getElementById('signup-dialog');
+      var signupForm = document.getElementById('signup-form');
+      var signupSuccess = document.querySelector('[data-signup-success]');
+      var signupEmailOut = document.querySelector('[data-signup-email]');
+      var signupTitle = document.getElementById('signup-title');
+      var signupEyebrow = document.querySelector('[data-signup-eyebrow]');
+      var signupSub = document.querySelector('[data-signup-sub]');
+      var signupSubmit = signupForm.querySelector('.signup-submit');
+      var signupSubmitLabel = signupForm.querySelector('[data-submit-label]');
+      var signupName = document.getElementById('signup-name');
+      var signupEmail = document.getElementById('signup-email');
+      var signupTeam = document.getElementById('signup-team');
+      var signupGotcha = document.getElementById('signup-gotcha');
+      var signupPlanField = signupForm.querySelector('[data-signup-plan-field]');
+      var signupAlert = document.querySelector('[data-signup-alert]');
+      var signupController = null;
+      var signupRequestId = 0;
+      var lastSignupTrigger = null;
+
+      /* Kosongkan untuk memakai server lokal. Isi dengan endpoint Formspree
+         (mis. https://formspree.io/f/abcdwxyz) untuk mengirim langsung ke Formspree. */
+      var SIGNUP_ENDPOINT = '';
+      var LOCAL_SIGNUP_ENDPOINT = 'http://127.0.0.1:4173/api/signup';
+      var SIGNUP_TIMEOUT_MS = 15000;
+      var signupPlans = {
+        trial: {
+          eyebrow: 'Gratis 14 hari',
+          sub: 'Buat workspace tim Anda dalam 2 menit. Tanpa kartu kredit.',
+          submit: 'Buat akun gratis'
+        },
+        free: {
+          eyebrow: 'Gratis selamanya',
+          sub: 'Buat workspace tim Anda dalam 2 menit. Tanpa kartu kredit.',
+          submit: 'Buat akun gratis'
+        },
+        pro: {
+          eyebrow: 'Pro · 14 hari gratis',
+          sub: 'Coba semua fitur Pro selama 14 hari. Tanpa kartu kredit.',
+          submit: 'Mulai uji coba Pro'
+        }
+      };
+      var signupDefaults = { title: signupTitle.textContent };
+      var activeSignupPlan = 'trial';
+
+      function setFieldError(input, message) {
+        var field = input.closest('.field');
+        var error = field.querySelector('.field-error');
+        field.classList.toggle('has-error', Boolean(message));
+        if (message) {
+          input.setAttribute('aria-invalid', 'true');
+          error.textContent = message;
+        } else {
+          input.removeAttribute('aria-invalid');
+          error.textContent = '';
+        }
+      }
+
+      function signupEndpoint() {
+        return SIGNUP_ENDPOINT || LOCAL_SIGNUP_ENDPOINT;
+      }
+
+      function clearSignupAlert() {
+        signupAlert.hidden = true;
+        signupAlert.textContent = '';
+      }
+
+      function showSignupAlert(message) {
+        signupAlert.textContent = message;
+        signupAlert.hidden = false;
+      }
+
+      function setSignupLoading(loading) {
+        var copy = signupPlans[activeSignupPlan] || signupPlans.trial;
+        signupSubmit.disabled = loading;
+        signupSubmit.classList.toggle('is-loading', loading);
+        if (loading) {
+          signupSubmit.setAttribute('aria-busy', 'true');
+        } else {
+          signupSubmit.removeAttribute('aria-busy');
+        }
+        signupSubmitLabel.textContent = loading ? 'Memproses...' : copy.submit;
+      }
+
+      function signupErrorText(data, status) {
+        if (data && typeof data.error === 'string' && data.error) return data.error;
+        if (data && Array.isArray(data.errors) && data.errors[0] && data.errors[0].message) {
+          return data.errors[0].message;
+        }
+        if (status === 429) return 'Terlalu banyak percobaan. Tunggu beberapa menit lalu coba lagi.';
+        if (status === 400 || status === 422) return 'Periksa kembali data yang Anda masukkan.';
+        return 'Pendaftaran gagal. Coba lagi sebentar lagi.';
+      }
+
+      function signupNetworkErrorText() {
+        if (SIGNUP_ENDPOINT) {
+          return 'Koneksi gagal. Periksa koneksi internet Anda lalu coba lagi.';
+        }
+        if (window.location.protocol === 'file:') {
+          return 'Server lokal belum berjalan. Jalankan start.bat, lalu coba lagi.';
+        }
+        return 'Tidak dapat terhubung ke server. Pastikan server lokal berjalan di port 4173.';
+      }
+
+      function showSignupSuccess(email) {
+        signupForm.hidden = true;
+        signupSuccess.hidden = false;
+        signupEmailOut.textContent = email;
+        signupEyebrow.textContent = 'Terdaftar';
+        signupTitle.textContent = 'Pendaftaran diterima.';
+        signupSub.textContent = 'Terima kasih sudah mendaftar.';
+        signupTitle.focus();
+      }
+
+      function resetSignup() {
+        var copy = signupPlans[activeSignupPlan] || signupPlans.trial;
+        signupRequestId++;
+        if (signupController) {
+          signupController.abort();
+          signupController = null;
+        }
+        signupForm.reset();
+        setFieldError(signupName, '');
+        setFieldError(signupEmail, '');
+        clearSignupAlert();
+        signupForm.hidden = false;
+        signupSuccess.hidden = true;
+        setSignupLoading(false);
+        signupEyebrow.textContent = copy.eyebrow;
+        signupTitle.textContent = signupDefaults.title;
+        signupSub.textContent = copy.sub;
+        signupPlanField.value = activeSignupPlan;
+        signupEmailOut.textContent = '';
+      }
+
+      function openSignup(trigger) {
+        var plan = trigger && trigger.getAttribute('data-signup-plan');
+        activeSignupPlan = plan && signupPlans[plan] ? plan : 'trial';
+        lastSignupTrigger = trigger || null;
+        closeMenu();
+        if (signupDialog.open) return;
+        resetSignup();
+        document.body.classList.add('has-dialog');
+        signupDialog.showModal();
+        window.setTimeout(function () { signupName.focus(); }, 40);
+      }
+
+      function closeSignup() {
+        if (signupDialog.open) signupDialog.close();
+      }
+
+      document.querySelectorAll('[data-signup]').forEach(function (button) {
+        button.addEventListener('click', function () { openSignup(button); });
+      });
+
+      document.querySelectorAll('[data-signup-close]').forEach(function (button) {
+        button.addEventListener('click', closeSignup);
+      });
+
+      signupDialog.addEventListener('click', function (event) {
+        if (event.target !== signupDialog) return;
+        var rect = signupDialog.getBoundingClientRect();
+        var outside = event.clientX < rect.left || event.clientX > rect.right ||
+          event.clientY < rect.top || event.clientY > rect.bottom;
+        if (outside) closeSignup();
+      });
+
+      signupDialog.addEventListener('close', function () {
+        document.body.classList.remove('has-dialog');
+        resetSignup();
+        var triggerVisible = lastSignupTrigger &&
+          lastSignupTrigger.getClientRects().length > 0 &&
+          window.getComputedStyle(lastSignupTrigger).visibility !== 'hidden';
+        var focusTarget = triggerVisible ? lastSignupTrigger : navToggle;
+        if (focusTarget) focusTarget.focus();
+        lastSignupTrigger = null;
+      });
+
+      signupForm.addEventListener('input', function (event) {
+        clearSignupAlert();
+        if (event.target === signupName || event.target === signupEmail) {
+          setFieldError(event.target, '');
+        }
+      });
+
+      signupForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        if (signupController) return;
+
+        var name = signupName.value.trim();
+        var email = signupEmail.value.trim();
+        var team = signupTeam.value.trim();
+        var firstInvalid = null;
+
+        if (name.length < 2 || name.length > 80) {
+          setFieldError(signupName, 'Masukkan nama lengkap Anda (2–80 karakter).');
+          firstInvalid = signupName;
+        } else {
+          setFieldError(signupName, '');
+        }
+
+        if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+          setFieldError(signupEmail, 'Masukkan email yang valid.');
+          firstInvalid = firstInvalid || signupEmail;
+        } else {
+          setFieldError(signupEmail, '');
+        }
+
+        if (firstInvalid) {
+          clearSignupAlert();
+          firstInvalid.focus();
+          return;
+        }
+
+        clearSignupAlert();
+        var requestId = ++signupRequestId;
+        var controller = new AbortController();
+        var timedOut = false;
+        signupController = controller;
+        setSignupLoading(true);
+
+        var timeout = window.setTimeout(function () {
+          timedOut = true;
+          controller.abort();
+        }, SIGNUP_TIMEOUT_MS);
+
+        try {
+          var response = await fetch(signupEndpoint(), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              name: name,
+              email: email,
+              team: team,
+              plan: activeSignupPlan,
+              _gotcha: signupGotcha.value
+            }),
+            signal: controller.signal
+          });
+
+          var raw = await response.text();
+          var data = null;
+          if (raw) {
+            try { data = JSON.parse(raw); } catch (parseError) { data = null; }
+          }
+
+          if (requestId !== signupRequestId) return;
+
+          var errorField = data && (data.field ||
+            (Array.isArray(data.errors) && data.errors[0] && data.errors[0].field));
+
+          if (!response.ok || (data && data.ok === false)) {
+            var message = signupErrorText(data, response.status);
+            if (errorField === 'name') {
+              setFieldError(signupName, message);
+              signupName.focus();
+            } else if (errorField === 'email') {
+              setFieldError(signupEmail, message);
+              signupEmail.focus();
+            } else {
+              showSignupAlert(message);
+            }
+            return;
+          }
+
+          showSignupSuccess(email);
+        } catch (error) {
+          if (requestId !== signupRequestId) return;
+          if (error && error.name === 'AbortError') {
+            showSignupAlert(timedOut
+              ? 'Server tidak merespons. Coba lagi sebentar lagi.'
+              : 'Permintaan dibatalkan.');
+          } else {
+            showSignupAlert(signupNetworkErrorText());
+          }
+        } finally {
+          window.clearTimeout(timeout);
+          if (signupController === controller) signupController = null;
+          if (requestId === signupRequestId) setSignupLoading(false);
+        }
+      });
+
+      /* Placeholder links (demo) */
+      document.querySelectorAll('a[href="#"]').forEach(function (link) {
+        link.addEventListener('click', function (event) { event.preventDefault(); });
+      });
+
+      /* Year */
+      var year = document.getElementById('year');
+      if (year) year.textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>

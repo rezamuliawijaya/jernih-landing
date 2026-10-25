@@ -1,0 +1,12 @@
+{
+  "name": "jernih-landing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Landing page Jernih dengan backend pendaftaran lokal tanpa dependensi.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
