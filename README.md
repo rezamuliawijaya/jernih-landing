@@ -1,8 +1,12 @@
 # Jernih — landing page + pendaftaran
 
-Landing page statis satu file (`index.html`) dengan backend lokal tanpa dependensi untuk menyimpan pendaftaran.
+Landing page SaaS satu file (`index.html`) dengan formulir pendaftaran yang terhubung ke Formspree. Backend Node lokal tanpa dependensi juga tersedia untuk pengembangan.
+
+**Demo:** <https://rezamuliawijaya.github.io/jernih-landing/>
 
 ## Menjalankan
+
+Buka `index.html` langsung di browser, atau jalankan server lokal:
 
 1. Pastikan Node.js 18+ terpasang (`node -v`).
 2. Jalankan `start.bat`, atau dari terminal:
@@ -13,35 +17,40 @@ Landing page statis satu file (`index.html`) dengan backend lokal tanpa dependen
 
 3. Buka <http://127.0.0.1:4173>.
 
-Server menyajikan `index.html` dan menerima `POST /api/signup`. Tidak ada `npm install` yang diperlukan.
+Form mengirim ke Formspree karena `SIGNUP_ENDPOINT` sudah diisi di `index.html`. Server lokal hanya diperlukan jika Anda ingin memakai backend lokal.
 
-## Data pendaftaran
+## Form pendaftaran
 
-Setiap pendaftaran ditambahkan sebagai satu baris JSON ke `data/signups.ndjson`:
+- Endpoint aktif: `https://formspree.io/f/mgaakzrd`
+- Setiap pendaftaran muncul di dashboard Formspree. Notifikasi email akan masuk jika diaktifkan di pengaturan form.
+- Field yang dikirim: `name`, `email`, `team`, `plan`, dan `_gotcha` (honeypot).
+- Setelah berhasil, dialog menampilkan “Pendaftaran diterima.”
+
+Untuk mengganti endpoint, cari baris berikut di bagian akhir `index.html`:
+
+```js
+var SIGNUP_ENDPOINT = 'https://formspree.io/f/mgaakzrd';
+```
+
+lalu ganti dengan endpoint form Anda.
+
+## Backend lokal (opsional)
+
+Kosongkan endpoint agar form kembali mengirim ke server lokal:
+
+```js
+var SIGNUP_ENDPOINT = '';
+```
+
+Jalankan `start.bat` atau `npm start`, lalu buka <http://127.0.0.1:4173>. Setiap pendaftaran ditambahkan sebagai satu baris JSON ke `data/signups.ndjson`:
 
 ```json
 {"id":"…","receivedAt":"2026-10-25T…","name":"Rani Kusuma","email":"rani@perusahaan.com","team":"Tim Produk","plan":"pro","source":"jernih-landing","userAgent":"…"}
 ```
 
-Buka file itu dengan editor teks atau impor ke spreadsheet. Field yang tersimpan: nama, email, tim opsional, paket yang dipilih, waktu masuk, dan user agent. Nilai `plan` adalah `trial` (CTA umum/uji coba 14 hari), `free`, atau `pro`. Alamat IP hanya dipakai di memori untuk rate limit dan tidak disimpan.
+Field yang tersimpan: nama, email, tim opsional, paket yang dipilih, waktu masuk, dan user agent. Nilai `plan` adalah `trial` (CTA umum/uji coba 14 hari), `free`, atau `pro`. Alamat IP hanya dipakai di memori untuk rate limit dan tidak disimpan. Folder `data/` diabaikan Git dan tidak disajikan oleh server.
 
-Folder `data/` diabaikan Git dan tidak disajikan oleh server.
-
-## Beralih ke Formspree
-
-Formspree berguna jika halaman di-host statis dan tidak ingin menjalankan server.
-
-1. Buat form di <https://formspree.io> dan salin endpoint-nya, misalnya `https://formspree.io/f/abcdwxyz`.
-2. Di `index.html`, cari `var SIGNUP_ENDPOINT = '';` di bagian akhir file.
-3. Isi endpoint tersebut:
-
-   ```js
-   var SIGNUP_ENDPOINT = 'https://formspree.io/f/abcdwxyz';
-   ```
-
-Setelah diisi, form mengirim langsung ke Formspree, bukan ke server lokal. Field `_gotcha` sudah tersedia sebagai honeypot dan akan dikenali Formspree.
-
-## Konfigurasi server
+## Konfigurasi server lokal
 
 | Variabel | Default | Keterangan |
 | --- | --- | --- |
@@ -56,17 +65,23 @@ set PORT=4174 && node server.js
 
 Jika port diubah, sesuaikan juga `LOCAL_SIGNUP_ENDPOINT` di `index.html`.
 
+## Deploy
+
+Repo: <https://github.com/rezamuliawijaya/jernih-landing>
+
+GitHub Pages disajikan dari branch `main`, folder root. Setelah perubahan di-push, halaman live diperbarui otomatis.
+
 ## Keamanan dan batasan
 
-- Hanya menerima `application/json`, maksimal 16 KB per permintaan.
-- Validasi nama (2–80 karakter), email, dan nama tim (maks. 60 karakter).
-- Rate limit 8 pendaftaran per IP dalam 10 menit.
-- CORS hanya untuk `file://` (`Origin: null`) dan `localhost`/`127.0.0.1`.
-- Honeypot `_gotcha` menolak bot tanpa memberi tahu mereka.
-- Server ini untuk pengembangan lokal. Untuk produksi, gunakan Formspree, layanan form lain, atau backend dengan database, HTTPS, autentikasi, dan backup.
+- Form memakai validasi nama (2–80 karakter), email, dan nama tim (maks. 60 karakter), serta honeypot `_gotcha`.
+- Server lokal hanya menerima `application/json`, maksimal 16 KB per permintaan.
+- Server lokal membatasi 8 pendaftaran per IP dalam 10 menit.
+- CORS server lokal hanya untuk `file://` (`Origin: null`) dan `localhost`/`127.0.0.1`.
+- Server lokal ditujukan untuk pengembangan. Untuk halaman statis, Formspree menangani pengiriman dan spam filtering.
 
 ## Troubleshooting
 
+- **Form gagal di halaman live** — periksa endpoint di `index.html`, status form di dashboard Formspree, lalu coba lagi.
 - **Port 4173 dipakai** — hentikan proses lain atau jalankan dengan `PORT` berbeda.
-- **Form gagal saat halaman dibuka via `file://`** — server lokal harus berjalan; jalankan `start.bat`.
-- **Ingin mengirim ke Formspree** — isi `SIGNUP_ENDPOINT` seperti di atas; server tidak perlu berjalan untuk pengiriman form.
+- **Ingin menyimpan data sendiri** — kosongkan `SIGNUP_ENDPOINT` dan jalankan server lokal seperti di atas.
+- **Formspree menolak pengiriman** — cek kuota/status form dan apakah notifikasi email sudah diverifikasi.
